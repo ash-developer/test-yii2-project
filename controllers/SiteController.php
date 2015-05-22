@@ -2,9 +2,10 @@
 
 namespace app\controllers;
 
+use app\models\Category;
+use app\models\Post;
 use Yii;
 use yii\base\ErrorException;
-use yii\base\Exception;
 use yii\web\Controller;
 use app\models\Channel;
 
@@ -13,8 +14,20 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        $rss = simplexml_load_file('http://habrahabr.ru/rss/interesting/');
-        return $this->render('index', ['rss' => $rss->channel]);
+        $post = new Post();
+        $post->title = 'title';
+        $post->author = 'author';
+        $post->link = 'link';
+        $post->description = 'description';
+        $post->save();
+
+        $model = new Category();
+        $model->title = 'title';
+        $model->save();
+
+        $post->link('categories', $model);
+
+        echo 'qwe';
     }
 
     public function actionChannels()

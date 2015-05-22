@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "publications".
@@ -13,7 +14,7 @@ use Yii;
  *
  * @property Channels $channel
  */
-class Publication extends \yii\db\ActiveRecord
+class Publication extends ActiveRecord
 {
     /**
      * @inheritdoc
@@ -53,6 +54,6 @@ class Publication extends \yii\db\ActiveRecord
      */
     public function getChannel()
     {
-        return $this->hasOne(Channels::className(), ['id' => 'channel_id']);
+        return $this->hasOne(Channel::className(), ['id' => 'channel_id']);
     }
 }
