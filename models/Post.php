@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "posts".
@@ -12,10 +13,9 @@ use Yii;
  * @property string $link
  * @property string $description
  * @property string $author
- *
- * @property PostCategoryRelations[] $postCategoryRelations
+ * @property string $date
  */
-class Post extends \yii\db\ActiveRecord
+class Post extends ActiveRecord
 {
     /**
      * @inheritdoc
@@ -47,6 +47,7 @@ class Post extends \yii\db\ActiveRecord
             'link' => 'Link',
             'description' => 'Description',
             'author' => 'Author',
+            'date' => 'Date'
         ];
     }
 

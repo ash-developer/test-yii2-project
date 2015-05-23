@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\models\Category;
 use app\models\Post;
 use Yii;
 use yii\base\ErrorException;
@@ -14,20 +13,11 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        $post = new Post();
-        $post->title = 'title';
-        $post->author = 'author';
-        $post->link = 'link';
-        $post->description = 'description';
-        $post->save();
+        $posts = Post::find()
+            ->orderBy('date')
+            ->all();
 
-        $model = new Category();
-        $model->title = 'title';
-        $model->save();
-
-        $post->link('categories', $model);
-
-        echo 'qwe';
+        return $this->render('index', ['posts' => $posts]);
     }
 
     public function actionChannels()

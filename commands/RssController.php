@@ -7,6 +7,7 @@ use app\models\Channel;
 use app\models\Post;
 use app\models\Publication;
 use yii\console\Controller;
+use yii\db\Exception;
 
 class RssController extends Controller
 {
@@ -26,30 +27,39 @@ class RssController extends Controller
                 ->where(['date' => $date])
                 ->count();
 
-            if (true || $count == 0) {
-//                $publication = new Publication();
-//                $publication->date = $date;
-//                $publication->link('channel', $channel);
-//                $publication->save();
+            if ($count == 0) {
+                $publication = new Publication();
+                $publication->date = $date;
+                $publication->link('channel', $channel);
+                $publication->save();
 
                 foreach ($rss->channel->item as $item) {
-                    $post = new Post();
-                    $post->title = $item->title->__toString();
-                    $post->author = $item->author->__toString();
-                    $post->link = $item->link->__toString();
-                    $post->description = $item->description->__toString();
-                    $post->save();
+                    $post = Post::find()->where(['link' => $item->link->__toString()])->one();
 
-                    foreach ($item->category as $category) {
-                        $model = Category::find()->where(['title' => $category->__toString()])->one();
+                    if (!$post) {
+                        $post = new Post();
+                        $post->title = $item->title->__toString();
+                        $post->author = $item->author->__toString();
+                        $post->link = $item->link->__toString();
+                        $post->description = $item->description->__toString();
+                        $post->date = date('Y-m-d H:i:s', strtotime($item->pubDate->__toString()));
+                        $post->save();
 
-                        if (!$model) {
-                            $model = new Category();
-                            $model->title = $category->__toString();
-                            $model->save();
+                        foreach ($item->category as $category) {
+                            $model = Category::find()->where(['title' => $category->__toString()])->one();
+
+                            if (!$model) {
+                                $model = new Category();
+                                $model->title = $category->__toString();
+                                $model->save();
+                            }
+
+                            try {
+                                $post->link('categories', $model);
+                            } catch (Exception $e) {
+
+                            }
                         }
-
-                        $post->link('categories', $model);
                     }
                 }
             }
